@@ -152,7 +152,14 @@ export default function WalkScreen() {
         ) : (
           <>
             <View style={styles.actionRow}>
-              <TouchableOpacity style={styles.poopButton} onPress={() => setPoopCount(c => c + 1)}>
+              <TouchableOpacity style={styles.poopButton} onPress={() => {
+                setPoopCount(c => c + 1);
+                const route = routeRef.current;
+                if (route.length > 0) {
+                  const last = route[route.length - 1];
+                  routeRef.current = [...route, { ...last, poop: true }];
+                }
+              }}>
                 <Text style={styles.poopEmoji}>💩</Text>
                 <Text style={styles.poopCount}>{poopCount}回</Text>
               </TouchableOpacity>

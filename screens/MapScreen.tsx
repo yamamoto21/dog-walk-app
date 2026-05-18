@@ -65,7 +65,7 @@ export default function MapScreen() {
   const handleSelect = (walk: WalkWithRoute) => {
     setSelected(walk);
     if (mapRef.current && walk.route && walk.route.length > 0) {
-      mapRef.current.fitToCoordinates(walk.route, {
+      mapRef.current.fitToCoordinates(walk.route.filter((c: any) => !c.poop), {
         edgePadding: { top: 60, right: 60, bottom: 60, left: 60 },
         animated: true,
       });
@@ -92,7 +92,9 @@ export default function MapScreen() {
     );
   }
 
-  const route = selected?.route ?? [];
+  const rawRoute = selected?.route ?? [];
+  const route = rawRoute.filter((c: any) => !c.poop);
+  const poopSpots = rawRoute.filter((c: any) => c.poop);
   const level = selected?.level ? LEVEL_MAP[selected.level] : null;
   const initialRegion = route.length > 0 ? {
     latitude: route[Math.floor(route.length / 2)].latitude,
@@ -116,7 +118,7 @@ export default function MapScreen() {
         initialRegion={initialRegion}
         onLayout={() => {
           if (mapRef.current && route.length > 0) {
-            mapRef.current.fitToCoordinates(route, {
+            mapRef.current.fitToCoordinates(rawRoute.filter((c: any) => !c.poop), {
               edgePadding: { top: 60, right: 60, bottom: 60, left: 60 },
               animated: false,
             });
@@ -136,6 +138,11 @@ export default function MapScreen() {
         {route.length > 1 && (
           <Marker coordinate={route[route.length - 1]} title="ゴール" pinColor="red" />
         )}
+        {poopSpots.map((coord: any, i: number) => (
+          <Marker key={`poop-${i}`} coordinate={coord} title={`💩 ${i + 1}回目`}>
+            <Text style={{ fontSize: 24 }}>💩</Text>
+          </Marker>
+        ))}
       </MapView>
 
       {selected && (
