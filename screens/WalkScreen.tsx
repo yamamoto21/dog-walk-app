@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, TextInput,
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
 import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 import { supabase } from '../lib/supabase';
 import { WalkLevel } from '../types';
 
@@ -92,11 +93,17 @@ export default function WalkScreen() {
   const uploadPhoto = async (uri: string): Promise<string | null> => {
     try {
       const fileName = `${Date.now()}.jpg`;
-      const response = await fetch(uri);
-      const blob = await response.blob();
+      const base64 = await FileSystem.readAsStringAsync(uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      const binaryString = atob(base64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
       const { data, error } = await supabase.storage
         .from('walk-photos')
-        .upload(fileName, blob, { contentType: 'image/jpeg' });
+        .upload(fileName, bytes, { contentType: 'image/jpeg' });
       if (error) {
         Alert.alert('アップロードエラー', error.message);
         return null;
