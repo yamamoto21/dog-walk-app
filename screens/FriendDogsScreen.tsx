@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, TextInput, Alert, RefreshControl, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '../lib/supabase';
+import { confirmDelete } from '../lib/confirm';
 import { FriendDog } from '../types';
 
 type FriendDogWithMet = FriendDog & { metToday: boolean };
@@ -61,7 +62,7 @@ export default function FriendDogsScreen() {
   };
 
   const deleteDog = async (dog: FriendDogWithMet) => {
-    const ok = window.confirm(`${dog.name}を削除しますか？`);
+    const ok = await confirmDelete(`${dog.name}を削除しますか？`);
     if (!ok) return;
     await supabase.from('friend_dogs').delete().eq('id', dog.id);
     setDogs(prev => prev.filter(d => d.id !== dog.id));

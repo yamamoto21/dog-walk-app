@@ -1,7 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '../lib/supabase';
+import { confirmDelete } from '../lib/confirm';
 import { Walk } from '../types';
 
 const LEVEL_MAP: Record<string, { label: string; emoji: string; color: string }> = {
@@ -44,7 +45,7 @@ export default function HistoryScreen() {
   useEffect(() => { fetchWalks(); }, [fetchWalks]);
 
   const deleteWalk = async (walk: Walk) => {
-    const ok = window.confirm(`${walk.started_at.slice(0, 10)} の記録を削除しますか？`);
+    const ok = await confirmDelete(`${walk.started_at.slice(0, 10)} の記録を削除しますか？`);
     if (!ok) return;
     await supabase.from('walks').delete().eq('id', walk.id);
     setWalks(prev => prev.filter(w => w.id !== walk.id));

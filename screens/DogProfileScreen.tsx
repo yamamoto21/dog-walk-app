@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, ScrollView, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '../lib/supabase';
+import { confirmDelete } from '../lib/confirm';
 
 type DogProfile = {
   id: string;
@@ -37,7 +38,7 @@ export default function DogProfileScreen() {
 
   const deleteDog = async () => {
     if (!dog) return;
-    const ok = window.confirm('プロフィールを削除しますか？');
+    const ok = await confirmDelete('プロフィールを削除しますか？');
     if (!ok) return;
     await supabase.from('dogs').delete().eq('id', dog.id);
     setDog(null);
