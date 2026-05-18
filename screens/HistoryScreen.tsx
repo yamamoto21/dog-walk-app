@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '../lib/supabase';
 import { confirmDelete } from '../lib/confirm';
 import { Walk, WalkPhoto } from '../types';
+import WalkDetailModal from './WalkDetailModal';
 
 const LEVEL_MAP: Record<string, { label: string; emoji: string; color: string }> = {
   good:   { label: '良い',   emoji: '😊', color: '#00B894' },
@@ -31,6 +32,7 @@ export default function HistoryScreen() {
   const [photosByWalk, setPhotosByWalk] = useState<Record<string, WalkPhoto[]>>({});
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [selectedWalk, setSelectedWalk] = useState<Walk | null>(null);
 
   const fetchWalks = useCallback(async () => {
     const { data, error } = await supabase
@@ -87,7 +89,7 @@ export default function HistoryScreen() {
           walks.map(walk => {
             const level = walk.level ? LEVEL_MAP[walk.level] : null;
             return (
-              <View key={walk.id} style={styles.card}>
+              <TouchableOpacity key={walk.id} style={styles.card} onPress={() => setSelectedWalk(walk)} activeOpacity={0.85}>
                 <View style={styles.cardHeader}>
                   <Text style={styles.date}>{walk.started_at.slice(0, 10)}</Text>
                   <View style={styles.cardHeaderRight}>
@@ -130,11 +132,17 @@ export default function HistoryScreen() {
                     ))}
                   </ScrollView>
                 )}
-              </View>
+              </TouchableOpacity>
             );
           })
         )}
       </ScrollView>
+
+      <WalkDetailModal
+        walk={selectedWalk}
+        photos={selectedWalk ? (photosByWalk[selectedWalk.id] ?? []) : []}
+        onClose={() => setSelectedWalk(null)}
+      />
     </SafeAreaView>
   );
 }
