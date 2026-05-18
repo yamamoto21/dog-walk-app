@@ -97,10 +97,12 @@ export default function WalkScreen() {
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token ?? process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
+      const fileUri = uri.startsWith('file://') ? uri : `file://${uri}`;
       const result = await FileSystem.uploadAsync(
         `${supabaseUrl}/storage/v1/object/walk-photos/${fileName}`,
-        uri,
+        fileUri,
         {
+          uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
           httpMethod: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -109,8 +111,8 @@ export default function WalkScreen() {
         }
       );
 
-      if (result.status !== 200) {
-        Alert.alert('アップロードエラー', `status: ${result.status} ${result.body}`);
+      if (result.status !== 200 && result.status !== 201) {
+        Alert.alert('アップロードエラー', `status: ${result.status}\n${result.body}`);
         return null;
       }
 
