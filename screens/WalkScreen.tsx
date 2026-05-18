@@ -93,23 +93,28 @@ export default function WalkScreen() {
   const uploadPhoto = async (uri: string): Promise<string | null> => {
     try {
       const fileName = `${Date.now()}.jpg`;
-      const base64 = await FileSystem.readAsStringAsync(uri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-      const binaryString = atob(base64);
-      const bytes = new Uint8Array(binaryString.length);
-      for (let i = 0; i < binaryString.length; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-      }
-      const { data, error } = await supabase.storage
-        .from('walk-photos')
-        .upload(fileName, bytes, { contentType: 'image/jpeg' });
-      if (error) {
-        Alert.alert('アップロードエラー', error.message);
+      const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token ?? process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+
+      const result = await FileSystem.uploadAsync(
+        `${supabaseUrl}/storage/v1/object/walk-photos/${fileName}`,
+        uri,
+        {
+          httpMethod: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'image/jpeg',
+          },
+        }
+      );
+
+      if (result.status !== 200) {
+        Alert.alert('アップロードエラー', `status: ${result.status} ${result.body}`);
         return null;
       }
-      if (!data) return null;
-      const { data: urlData } = supabase.storage.from('walk-photos').getPublicUrl(data.path);
+
+      const { data: urlData } = supabase.storage.from('walk-photos').getPublicUrl(fileName);
       return urlData.publicUrl;
     } catch (e: any) {
       Alert.alert('アップロードエラー', e?.message ?? '不明なエラー');
