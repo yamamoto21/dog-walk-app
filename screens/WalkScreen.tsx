@@ -109,7 +109,6 @@ export default function WalkScreen() {
     const { error } = await supabase.from('walks').insert({
       started_at: startedAt,
       ended_at: endedAt,
-      duration_seconds: seconds,
       distance_meters: Math.round(distanceMeters),
       poop_count: poopCount,
       level: walkLevel,
