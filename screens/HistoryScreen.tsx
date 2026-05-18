@@ -120,7 +120,13 @@ export default function HistoryScreen() {
                 {(photosByWalk[walk.id] ?? []).length > 0 && (
                   <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.photoRow}>
                     {(photosByWalk[walk.id] ?? []).map(p => (
-                      <Image key={p.id} source={{ uri: p.photo_url }} style={styles.photoThumb} />
+                      <Image
+                        key={p.id}
+                        source={{ uri: p.photo_url.trim() }}
+                        style={styles.photoThumb}
+                        resizeMode="cover"
+                        onError={(e) => console.log('画像読み込みエラー:', p.photo_url, e.nativeEvent)}
+                      />
                     ))}
                   </ScrollView>
                 )}
