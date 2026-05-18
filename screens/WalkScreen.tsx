@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, TextInput,
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
 import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
 import { supabase } from '../lib/supabase';
 import { WalkLevel } from '../types';
 
@@ -97,27 +96,30 @@ export default function WalkScreen() {
       const { data: { session } } = await supabase.auth.getSession();
       const token = session?.access_token ?? process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
-      const fileUri = uri.startsWith('file://') ? uri : `file://${uri}`;
-      const result = await FileSystem.uploadAsync(
-        `${supabaseUrl}/storage/v1/object/walk-photos/${fileName}`,
-        fileUri,
-        {
-          uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
-          httpMethod: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'image/jpeg',
-          },
-        }
-      );
+      return await new Promise((resolve) => {
+        const formData = new FormData();
+        formData.append('', { uri, name: fileName, type: 'image/jpeg' } as any);
 
-      if (result.status !== 200 && result.status !== 201) {
-        Alert.alert('アップロードエラー', `status: ${result.status}\n${result.body}`);
-        return null;
-      }
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', `${supabaseUrl}/storage/v1/object/walk-photos/${fileName}`);
+        xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
-      const { data: urlData } = supabase.storage.from('walk-photos').getPublicUrl(fileName);
-      return urlData.publicUrl;
+        xhr.onreadystatechange = () => {
+          if (xhr.readyState !== 4) return;
+          if (xhr.status === 200 || xhr.status === 201) {
+            const { data: urlData } = supabase.storage.from('walk-photos').getPublicUrl(fileName);
+            resolve(urlData.publicUrl);
+          } else {
+            Alert.alert('アップロードエラー', `${xhr.status}: ${xhr.responseText}`);
+            resolve(null);
+          }
+        };
+        xhr.onerror = () => {
+          Alert.alert('アップロードエラー', 'ネットワークエラー');
+          resolve(null);
+        };
+        xhr.send(formData);
+      });
     } catch (e: any) {
       Alert.alert('アップロードエラー', e?.message ?? '不明なエラー');
       return null;
