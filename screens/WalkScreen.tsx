@@ -92,13 +92,20 @@ export default function WalkScreen() {
   const uploadPhoto = async (uri: string): Promise<string | null> => {
     try {
       const fileName = `${Date.now()}.jpg`;
-      const formData = new FormData();
-      formData.append('file', { uri, name: fileName, type: 'image/jpeg' } as any);
-      const { data, error } = await supabase.storage.from('walk-photos').upload(fileName, formData);
-      if (error || !data) return null;
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      const { data, error } = await supabase.storage
+        .from('walk-photos')
+        .upload(fileName, blob, { contentType: 'image/jpeg' });
+      if (error) {
+        Alert.alert('アップロードエラー', error.message);
+        return null;
+      }
+      if (!data) return null;
       const { data: urlData } = supabase.storage.from('walk-photos').getPublicUrl(data.path);
       return urlData.publicUrl;
-    } catch {
+    } catch (e: any) {
+      Alert.alert('アップロードエラー', e?.message ?? '不明なエラー');
       return null;
     }
   };
@@ -114,7 +121,7 @@ export default function WalkScreen() {
       setUploading(true);
       const url = await uploadPhoto(result.assets[0].uri);
       setUploading(false);
-      if (url) {
+      if (url !== null) {
         const route = routeRef.current;
         const last = route.length > 0 ? route[route.length - 1] : null;
         photoDataRef.current = [...photoDataRef.current, {
@@ -124,8 +131,6 @@ export default function WalkScreen() {
           taken_at: new Date().toISOString(),
         }];
         setPhotoUrls(prev => [...prev, url]);
-      } else {
-        Alert.alert('アップロードに失敗しました');
       }
     }
   };
