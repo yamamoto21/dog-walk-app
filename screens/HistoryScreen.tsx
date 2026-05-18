@@ -89,6 +89,7 @@ export default function HistoryScreen() {
                     <Text style={styles.statValue}>{walk.poop_count}回</Text>
                   </View>
                 </View>
+                {walk.memo ? <Text style={styles.memo}>📝 {walk.memo}</Text> : null}
               </View>
             );
           })
@@ -118,4 +119,5 @@ const styles = StyleSheet.create({
   stat: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   statEmoji: { fontSize: 14 },
   statValue: { fontSize: 14, color: '#636E72' },
+  memo: { fontSize: 13, color: '#636E72', marginTop: 8, fontStyle: 'italic' },
 });

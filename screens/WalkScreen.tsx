@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
 import { supabase } from '../lib/supabase';
@@ -33,6 +33,7 @@ export default function WalkScreen() {
   const [saving, setSaving] = useState(false);
   const [distanceMeters, setDistanceMeters] = useState(0);
   const [hasGps, setHasGps] = useState(false);
+  const [memo, setMemo] = useState('');
 
   const routeRef = useRef<Coordinate[]>([]);
   const locationSub = useRef<Location.LocationSubscription | null>(null);
@@ -89,6 +90,7 @@ export default function WalkScreen() {
     setPoopCount(0);
     setWalkLevel(null);
     setDistanceMeters(0);
+    setMemo('');
     setStartedAt(new Date().toISOString());
     setIsWalking(true);
     await startGps();
@@ -107,10 +109,12 @@ export default function WalkScreen() {
     const { error } = await supabase.from('walks').insert({
       started_at: startedAt,
       ended_at: endedAt,
+      duration_seconds: seconds,
       distance_meters: Math.round(distanceMeters),
       poop_count: poopCount,
       level: walkLevel,
       route: routeRef.current,
+      memo: memo.trim() || null,
     });
     setSaving(false);
     setIsWalking(false);
@@ -177,6 +181,18 @@ export default function WalkScreen() {
               </View>
             </View>
 
+            <View style={styles.memoSection}>
+              <Text style={styles.memoTitle}>メモ（任意）</Text>
+              <TextInput
+                style={styles.memoInput}
+                value={memo}
+                onChangeText={setMemo}
+                placeholder="今日の散歩の様子を記録..."
+                multiline
+                numberOfLines={3}
+              />
+            </View>
+
             <TouchableOpacity
               style={[styles.stopButton, saving && styles.stopButtonDisabled]}
               onPress={handleStop}
@@ -231,6 +247,12 @@ const styles = StyleSheet.create({
   levelEmoji: { fontSize: 24 },
   levelLabel: { fontSize: 12, color: '#636E72', marginTop: 4 },
   levelLabelActive: { color: '#FF8C42', fontWeight: 'bold' },
+  memoSection: { marginBottom: 24 },
+  memoTitle: { fontSize: 16, fontWeight: 'bold', color: '#2D3436', marginBottom: 8 },
+  memoInput: {
+    backgroundColor: '#fff', borderRadius: 12, padding: 14, fontSize: 15,
+    borderWidth: 1, borderColor: '#DFE6E9', minHeight: 80, textAlignVertical: 'top',
+  },
   stopButton: { backgroundColor: '#636E72', paddingVertical: 16, borderRadius: 16, alignItems: 'center' },
   stopButtonDisabled: { backgroundColor: '#B2BEC3' },
   stopButtonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
