@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform, ActivityIndicator, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '../lib/supabase';
-import { Walk } from '../types';
+import { Walk, WalkPhoto } from '../types';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -43,6 +43,7 @@ const formatTime = (s: number) => {
 export default function MapScreen() {
   const [walks, setWalks] = useState<WalkWithRoute[]>([]);
   const [selected, setSelected] = useState<WalkWithRoute | null>(null);
+  const [photos, setPhotos] = useState<WalkPhoto[]>([]);
   const [loading, setLoading] = useState(true);
   const mapRef = useRef<any>(null);
 
@@ -59,6 +60,13 @@ export default function MapScreen() {
     }
     setLoading(false);
   }, []);
+
+  useEffect(() => {
+    if (!selected) return;
+    supabase.from('walk_photos').select('*').eq('walk_id', selected.id).then(({ data }) => {
+      setPhotos(data ?? []);
+    });
+  }, [selected]);
 
   useEffect(() => { fetchWalks(); }, [fetchWalks]);
 
@@ -141,6 +149,11 @@ export default function MapScreen() {
         {poopSpots.map((coord: any, i: number) => (
           <Marker key={`poop-${i}`} coordinate={coord} title={`💩 ${i + 1}回目`}>
             <Text style={{ fontSize: 24 }}>💩</Text>
+          </Marker>
+        ))}
+        {photos.filter(p => p.lat && p.lng).map(p => (
+          <Marker key={`photo-${p.id}`} coordinate={{ latitude: p.lat!, longitude: p.lng! }} title="📷 写真">
+            <Text style={{ fontSize: 24 }}>📷</Text>
           </Marker>
         ))}
       </MapView>

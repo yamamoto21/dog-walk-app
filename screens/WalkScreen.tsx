@@ -40,6 +40,7 @@ export default function WalkScreen() {
 
   const routeRef = useRef<Coordinate[]>([]);
   const locationSub = useRef<Location.LocationSubscription | null>(null);
+  const photoDataRef = useRef<{ url: string; lat: number | null; lng: number | null; taken_at: string }[]>([]);
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
@@ -114,6 +115,14 @@ export default function WalkScreen() {
       const url = await uploadPhoto(result.assets[0].uri);
       setUploading(false);
       if (url) {
+        const route = routeRef.current;
+        const last = route.length > 0 ? route[route.length - 1] : null;
+        photoDataRef.current = [...photoDataRef.current, {
+          url,
+          lat: last?.latitude ?? null,
+          lng: last?.longitude ?? null,
+          taken_at: new Date().toISOString(),
+        }];
         setPhotoUrls(prev => [...prev, url]);
       } else {
         Alert.alert('アップロードに失敗しました');
@@ -128,6 +137,7 @@ export default function WalkScreen() {
     setDistanceMeters(0);
     setMemo('');
     setPhotoUrls([]);
+    photoDataRef.current = [];
     setStartedAt(new Date().toISOString());
     setIsWalking(true);
     await startGps();
@@ -143,7 +153,7 @@ export default function WalkScreen() {
 
     setSaving(true);
     const endedAt = new Date().toISOString();
-    const { error } = await supabase.from('walks').insert({
+    const { data: walkData, error } = await supabase.from('walks').insert({
       started_at: startedAt,
       ended_at: endedAt,
       distance_meters: Math.round(distanceMeters),
@@ -151,17 +161,34 @@ export default function WalkScreen() {
       level: walkLevel,
       route: routeRef.current,
       memo: memo.trim() || null,
-      photos: photoUrls.length > 0 ? photoUrls : null,
-    });
+    }).select().single();
+
+    if (error || !walkData) {
+      setSaving(false);
+      setIsWalking(false);
+      setSeconds(0);
+      setHasGps(false);
+      Alert.alert('保存エラー', error?.message ?? '不明なエラー');
+      return;
+    }
+
+    if (photoDataRef.current.length > 0) {
+      await supabase.from('walk_photos').insert(
+        photoDataRef.current.map(p => ({
+          walk_id: walkData.id,
+          photo_url: p.url,
+          lat: p.lat,
+          lng: p.lng,
+          taken_at: p.taken_at,
+        }))
+      );
+    }
+
     setSaving(false);
     setIsWalking(false);
     setSeconds(0);
     setHasGps(false);
 
-    if (error) {
-      Alert.alert('保存エラー', error.message);
-      return;
-    }
     const level = WALK_LEVELS.find(l => l.key === walkLevel);
     Alert.alert(
       '散歩完了！記録しました 🐾',

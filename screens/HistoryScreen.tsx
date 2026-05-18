@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, A
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '../lib/supabase';
 import { confirmDelete } from '../lib/confirm';
-import { Walk } from '../types';
+import { Walk, WalkPhoto } from '../types';
 
 const LEVEL_MAP: Record<string, { label: string; emoji: string; color: string }> = {
   good:   { label: '良い',   emoji: '😊', color: '#00B894' },
@@ -28,6 +28,7 @@ const getDuration = (walk: Walk): number => {
 
 export default function HistoryScreen() {
   const [walks, setWalks] = useState<Walk[]>([]);
+  const [photosByWalk, setPhotosByWalk] = useState<Record<string, WalkPhoto[]>>({});
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -37,7 +38,24 @@ export default function HistoryScreen() {
       .select('*')
       .order('started_at', { ascending: false })
       .limit(50);
-    if (!error && data) setWalks(data);
+    if (!error && data) {
+      setWalks(data);
+      const ids = data.map((w: Walk) => w.id);
+      if (ids.length > 0) {
+        const { data: photos } = await supabase
+          .from('walk_photos')
+          .select('*')
+          .in('walk_id', ids);
+        if (photos) {
+          const grouped: Record<string, WalkPhoto[]> = {};
+          for (const p of photos) {
+            if (!grouped[p.walk_id]) grouped[p.walk_id] = [];
+            grouped[p.walk_id].push(p);
+          }
+          setPhotosByWalk(grouped);
+        }
+      }
+    }
     setLoading(false);
     setRefreshing(false);
   }, []);
@@ -99,10 +117,10 @@ export default function HistoryScreen() {
                   </View>
                 </View>
                 {walk.memo ? <Text style={styles.memo}>📝 {walk.memo}</Text> : null}
-                {walk.photos && walk.photos.length > 0 && (
+                {(photosByWalk[walk.id] ?? []).length > 0 && (
                   <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.photoRow}>
-                    {walk.photos.map((url, i) => (
-                      <Image key={i} source={{ uri: url }} style={styles.photoThumb} />
+                    {(photosByWalk[walk.id] ?? []).map(p => (
+                      <Image key={p.id} source={{ uri: p.photo_url }} style={styles.photoThumb} />
                     ))}
                   </ScrollView>
                 )}
