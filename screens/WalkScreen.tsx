@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, TextInput, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
+import * as ImagePicker from 'expo-image-picker';
 import { supabase } from '../lib/supabase';
 import { WalkLevel } from '../types';
 
@@ -34,6 +35,8 @@ export default function WalkScreen() {
   const [distanceMeters, setDistanceMeters] = useState(0);
   const [hasGps, setHasGps] = useState(false);
   const [memo, setMemo] = useState('');
+  const [photoUrls, setPhotoUrls] = useState<string[]>([]);
+  const [uploading, setUploading] = useState(false);
 
   const routeRef = useRef<Coordinate[]>([]);
   const locationSub = useRef<Location.LocationSubscription | null>(null);
@@ -85,12 +88,46 @@ export default function WalkScreen() {
     return true;
   };
 
+  const uploadPhoto = async (uri: string): Promise<string | null> => {
+    try {
+      const fileName = `${Date.now()}.jpg`;
+      const formData = new FormData();
+      formData.append('file', { uri, name: fileName, type: 'image/jpeg' } as any);
+      const { data, error } = await supabase.storage.from('walk-photos').upload(fileName, formData);
+      if (error || !data) return null;
+      const { data: urlData } = supabase.storage.from('walk-photos').getPublicUrl(data.path);
+      return urlData.publicUrl;
+    } catch {
+      return null;
+    }
+  };
+
+  const handleCamera = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('カメラの許可が必要です', '設定からカメラのアクセスを許可してください');
+      return;
+    }
+    const result = await ImagePicker.launchCameraAsync({ quality: 0.7 });
+    if (!result.canceled && result.assets[0]) {
+      setUploading(true);
+      const url = await uploadPhoto(result.assets[0].uri);
+      setUploading(false);
+      if (url) {
+        setPhotoUrls(prev => [...prev, url]);
+      } else {
+        Alert.alert('アップロードに失敗しました');
+      }
+    }
+  };
+
   const handleStart = async () => {
     setSeconds(0);
     setPoopCount(0);
     setWalkLevel(null);
     setDistanceMeters(0);
     setMemo('');
+    setPhotoUrls([]);
     setStartedAt(new Date().toISOString());
     setIsWalking(true);
     await startGps();
@@ -114,6 +151,7 @@ export default function WalkScreen() {
       level: walkLevel,
       route: routeRef.current,
       memo: memo.trim() || null,
+      photos: photoUrls.length > 0 ? photoUrls : null,
     });
     setSaving(false);
     setIsWalking(false);
@@ -163,11 +201,19 @@ export default function WalkScreen() {
                 <Text style={styles.poopEmoji}>💩</Text>
                 <Text style={styles.poopCount}>{poopCount}回</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.cameraButton}>
-                <Text style={styles.cameraEmoji}>📷</Text>
-                <Text style={styles.cameraLabel}>写真を撮る</Text>
+              <TouchableOpacity style={styles.cameraButton} onPress={handleCamera} disabled={uploading}>
+                <Text style={styles.cameraEmoji}>{uploading ? '⏳' : '📷'}</Text>
+                <Text style={styles.cameraLabel}>{uploading ? 'アップロード中...' : '写真を撮る'}</Text>
               </TouchableOpacity>
             </View>
+
+            {photoUrls.length > 0 && (
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.photoRow}>
+                {photoUrls.map((url, i) => (
+                  <Image key={i} source={{ uri: url }} style={styles.photoThumb} />
+                ))}
+              </ScrollView>
+            )}
 
             <View style={styles.levelSection}>
               <Text style={styles.levelTitle}>今日の散歩レベル</Text>
@@ -253,6 +299,8 @@ const styles = StyleSheet.create({
   levelEmoji: { fontSize: 24 },
   levelLabel: { fontSize: 12, color: '#636E72', marginTop: 4 },
   levelLabelActive: { color: '#FF8C42', fontWeight: 'bold' },
+  photoRow: { marginBottom: 16 },
+  photoThumb: { width: 80, height: 80, borderRadius: 8, marginRight: 8 },
   memoSection: { marginBottom: 24 },
   memoTitle: { fontSize: 16, fontWeight: 'bold', color: '#2D3436', marginBottom: 8 },
   memoInput: {

@@ -10,6 +10,7 @@ export type Walk = {
   poop_count: number;
   level: WalkLevel | null;
   memo: string | null;
+  photos: string[] | null;
   created_at: string;
 };
 

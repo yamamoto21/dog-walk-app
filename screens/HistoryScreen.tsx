@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, ActivityIndicator, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '../lib/supabase';
 import { confirmDelete } from '../lib/confirm';
@@ -99,6 +99,13 @@ export default function HistoryScreen() {
                   </View>
                 </View>
                 {walk.memo ? <Text style={styles.memo}>📝 {walk.memo}</Text> : null}
+                {walk.photos && walk.photos.length > 0 && (
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.photoRow}>
+                    {walk.photos.map((url, i) => (
+                      <Image key={i} source={{ uri: url }} style={styles.photoThumb} />
+                    ))}
+                  </ScrollView>
+                )}
               </View>
             );
           })
@@ -129,4 +136,6 @@ const styles = StyleSheet.create({
   statEmoji: { fontSize: 14 },
   statValue: { fontSize: 14, color: '#636E72' },
   memo: { fontSize: 13, color: '#636E72', marginTop: 8, fontStyle: 'italic' },
+  photoRow: { marginTop: 10 },
+  photoThumb: { width: 72, height: 72, borderRadius: 8, marginRight: 8 },
 });
