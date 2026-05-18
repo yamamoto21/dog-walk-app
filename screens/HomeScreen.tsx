@@ -17,6 +17,14 @@ const formatTime = (s: number) => {
   return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
 };
 
+const getDuration = (walk: Walk): number => {
+  if (walk.duration_seconds) return walk.duration_seconds;
+  if (walk.ended_at) {
+    return Math.floor((new Date(walk.ended_at).getTime() - new Date(walk.started_at).getTime()) / 1000);
+  }
+  return 0;
+};
+
 export default function HomeScreen() {
   const [todayWalks, setTodayWalks] = useState<Walk[]>([]);
   const [recentWalks, setRecentWalks] = useState<Walk[]>([]);
@@ -82,7 +90,7 @@ export default function HomeScreen() {
                     {level && <Text style={styles.walkLevel}>{level.emoji} {level.label}</Text>}
                   </View>
                   <View style={styles.walkStats}>
-                    <Text style={styles.walkStat}>⏱ {formatTime(walk.duration_seconds ?? 0)}</Text>
+                    <Text style={styles.walkStat}>⏱ {formatTime(getDuration(walk))}</Text>
                     <Text style={styles.walkStat}>💩 {walk.poop_count}回</Text>
                   </View>
                 </View>

@@ -17,6 +17,14 @@ const formatTime = (s: number) => {
   return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
 };
 
+const getDuration = (walk: Walk): number => {
+  if (walk.duration_seconds) return walk.duration_seconds;
+  if (walk.ended_at) {
+    return Math.floor((new Date(walk.ended_at).getTime() - new Date(walk.started_at).getTime()) / 1000);
+  }
+  return 0;
+};
+
 export default function HistoryScreen() {
   const [walks, setWalks] = useState<Walk[]>([]);
   const [loading, setLoading] = useState(true);
@@ -78,7 +86,7 @@ export default function HistoryScreen() {
                 <View style={styles.stats}>
                   <View style={styles.stat}>
                     <Text style={styles.statEmoji}>⏱</Text>
-                    <Text style={styles.statValue}>{formatTime(walk.duration_seconds ?? 0)}</Text>
+                    <Text style={styles.statValue}>{formatTime(getDuration(walk))}</Text>
                   </View>
                   <View style={styles.stat}>
                     <Text style={styles.statEmoji}>📍</Text>
