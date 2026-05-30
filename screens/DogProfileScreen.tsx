@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, ScrollView, ActivityIndicator, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '../lib/supabase';
 import { confirmDelete } from '../lib/confirm';
@@ -82,7 +82,7 @@ export default function DogProfileScreen() {
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.header}>
-          <Text style={styles.dogEmoji}>🐕</Text>
+          <Image source={require('../assets/img/loading-dog.png')} style={styles.dogImage} />
           {!isEditing && dog ? (
             <>
               <Text style={styles.dogName}>{dog.name}</Text>
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fddb13' },
   scroll: { padding: 24 },
   header: { alignItems: 'center', paddingVertical: 24 },
-  dogEmoji: { fontSize: 80 },
+  dogImage: { width: 160, height: 160, resizeMode: 'contain' },
   title: { fontSize: 24, fontWeight: 'bold', color: '#000', marginTop: 12 },
   dogName: { fontSize: 32, fontWeight: 'bold', color: '#000', marginTop: 12 },
   dogDetail: { fontSize: 16, color: '#000', marginTop: 6 },
