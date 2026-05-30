@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, RefreshControl, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '../lib/supabase';
 import { Walk } from '../types';
@@ -58,7 +58,7 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.container}>
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); fetchData(); }} />}>
         <View style={styles.header}>
-          <Text style={styles.dogEmoji}>🐕</Text>
+          <Image source={require('../assets/img/loading-dog.png')} style={styles.dogImage} />
           <Text style={styles.greeting}>おかえり！</Text>
           <Text style={styles.subGreeting}>今日もいい散歩をしよう</Text>
         </View>
@@ -111,10 +111,10 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#FFF8F0' },
-  header: { alignItems: 'center', paddingTop: 24, paddingBottom: 16 },
-  dogEmoji: { fontSize: 64 },
-  greeting: { fontSize: 28, fontWeight: 'bold', color: '#2D3436', marginTop: 8 },
-  subGreeting: { fontSize: 14, color: '#636E72', marginTop: 4 },
+  header: { alignItems: 'center', paddingTop: 32, paddingBottom: 32, backgroundColor: '#fddb13' },
+  dogImage: { width: 160, height: 160, resizeMode: 'contain' },
+  greeting: { fontSize: 28, fontWeight: 'bold', color: '#fff', marginTop: 8 },
+  subGreeting: { fontSize: 14, color: '#fff', marginTop: 4 },
   statsContainer: { flexDirection: 'row', marginHorizontal: 24, marginTop: 16, gap: 12 },
   statCard: {
     flex: 1, backgroundColor: '#fff', borderRadius: 12, padding: 16, alignItems: 'center',
