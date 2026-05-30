@@ -110,11 +110,11 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFF8F0' },
+  container: { flex: 1, backgroundColor: '#fddb13' },
   header: { alignItems: 'center', paddingTop: 32, paddingBottom: 32, backgroundColor: '#fddb13' },
   dogImage: { width: 160, height: 160, resizeMode: 'contain' },
-  greeting: { fontSize: 28, fontWeight: 'bold', color: '#fff', marginTop: 8 },
-  subGreeting: { fontSize: 14, color: '#fff', marginTop: 4 },
+  greeting: { fontSize: 28, fontWeight: 'bold', color: '#000', marginTop: 8 },
+  subGreeting: { fontSize: 14, color: '#000', marginTop: 4 },
   statsContainer: { flexDirection: 'row', marginHorizontal: 24, marginTop: 16, gap: 12 },
   statCard: {
     flex: 1, backgroundColor: '#fff', borderRadius: 12, padding: 16, alignItems: 'center',
