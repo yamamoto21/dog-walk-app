@@ -1,5 +1,5 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, RefreshControl, Image, Animated } from 'react-native';
+import { useEffect, useState, useCallback } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, RefreshControl, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '../lib/supabase';
 import { Walk } from '../types';
@@ -30,35 +30,6 @@ export default function HomeScreen() {
   const [recentWalks, setRecentWalks] = useState<Walk[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
-  const translateX = useRef(new Animated.Value(0)).current;
-  const translateY = useRef(new Animated.Value(0)).current;
-  const scaleX = useRef(new Animated.Value(1)).current;
-
-  useEffect(() => {
-    const bob = (duration: number) => Animated.sequence([
-      Animated.timing(translateY, { toValue: -12, duration: duration / 4, useNativeDriver: true }),
-      Animated.timing(translateY, { toValue: 0, duration: duration / 4, useNativeDriver: true }),
-      Animated.timing(translateY, { toValue: -12, duration: duration / 4, useNativeDriver: true }),
-      Animated.timing(translateY, { toValue: 0, duration: duration / 4, useNativeDriver: true }),
-    ]);
-
-    const walk = Animated.loop(
-      Animated.sequence([
-        Animated.timing(scaleX, { toValue: 1, duration: 0, useNativeDriver: true }),
-        Animated.parallel([
-          Animated.timing(translateX, { toValue: 80, duration: 1200, useNativeDriver: true }),
-          bob(1200),
-        ]),
-        Animated.timing(scaleX, { toValue: -1, duration: 0, useNativeDriver: true }),
-        Animated.parallel([
-          Animated.timing(translateX, { toValue: -80, duration: 1200, useNativeDriver: true }),
-          bob(1200),
-        ]),
-      ])
-    );
-    walk.start();
-    return () => walk.stop();
-  }, []);
 
   const fetchData = useCallback(async () => {
     const todayStart = new Date();
@@ -88,10 +59,7 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.container}>
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); fetchData(); }} />}>
         <View style={styles.header}>
-          <Animated.Image
-            source={require('../assets/img/loading-dog.png')}
-            style={[styles.dogImage, { transform: [{ translateX }, { translateY }, { scaleX }] }]}
-          />
+          <Image source={require('../assets/img/loading-dog.png')} style={styles.dogImage} />
           <Text style={styles.greeting}>おかえり！</Text>
           <Text style={styles.subGreeting}>今日もいい散歩をしよう</Text>
         </View>
