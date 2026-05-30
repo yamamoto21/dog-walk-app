@@ -1,6 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Text, View, ActivityIndicator } from 'react-native';
+import { Text, View, ActivityIndicator, Image, StyleSheet } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider, useAuth } from './lib/auth';
 import HomeScreen from './screens/HomeScreen';
@@ -17,8 +17,11 @@ function AppNavigator() {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FFF8F0' }}>
-        <ActivityIndicator size="large" color="#FF8C42" />
+      <View style={styles.loadingContainer}>
+        <Image source={require('./assets/img/loading-dog.png')} style={styles.loadingImage} />
+        <Text style={styles.loadingTitle}>おさんぽノート</Text>
+        <Text style={styles.loadingSubText}>もうすぐ出発！🐾</Text>
+        <ActivityIndicator size="large" color="#fff" style={{ marginTop: 16 }} />
       </View>
     );
   }
@@ -67,6 +70,32 @@ function AppNavigator() {
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fddb13',
+  },
+  loadingImage: {
+    width: 200,
+    height: 200,
+    resizeMode: 'contain',
+  },
+  loadingTitle: {
+    marginTop: 16,
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#fff',
+    letterSpacing: 2,
+  },
+  loadingSubText: {
+    marginTop: 12,
+    fontSize: 16,
+    color: '#fff',
+  },
+});
 
 export default function App() {
   return (
