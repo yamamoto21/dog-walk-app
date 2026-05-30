@@ -155,10 +155,10 @@ export default function WalkDetailModal({ walk, photos, onClose }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFF8F0' },
+  container: { flex: 1, backgroundColor: '#fddb13' },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 24, paddingBottom: 16 },
-  title: { fontSize: 20, fontWeight: 'bold', color: '#2D3436' },
-  close: { fontSize: 22, color: '#636E72' },
+  title: { fontSize: 20, fontWeight: 'bold', color: '#000' },
+  close: { fontSize: 22, color: '#000' },
   scroll: { paddingBottom: 40 },
   statsCard: {
     backgroundColor: '#fff', marginHorizontal: 24, borderRadius: 16, padding: 16, marginBottom: 16,
@@ -170,15 +170,15 @@ const styles = StyleSheet.create({
   statsRow: { flexDirection: 'row', gap: 20 },
   stat: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   statEmoji: { fontSize: 16 },
-  statValue: { fontSize: 15, fontWeight: 'bold', color: '#2D3436' },
+  statValue: { fontSize: 15, fontWeight: 'bold', color: '#000' },
   mapContainer: { marginHorizontal: 24, borderRadius: 16, overflow: 'hidden', height: 220, marginBottom: 16 },
   map: { flex: 1 },
   section: { marginHorizontal: 24, marginBottom: 20 },
-  sectionTitle: { fontSize: 16, fontWeight: 'bold', color: '#2D3436', marginBottom: 10 },
-  memo: { fontSize: 15, color: '#636E72', lineHeight: 22 },
+  sectionTitle: { fontSize: 16, fontWeight: 'bold', color: '#000', marginBottom: 10 },
+  memo: { fontSize: 15, color: '#000', lineHeight: 22 },
   photo: { width: 120, height: 120, borderRadius: 12, marginRight: 10 },
   dogRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#F0F0F0' },
   compatEmoji: { fontSize: 28 },
-  dogName: { fontSize: 15, fontWeight: 'bold', color: '#2D3436' },
-  dogSub: { fontSize: 13, color: '#636E72', marginTop: 2 },
+  dogName: { fontSize: 15, fontWeight: 'bold', color: '#000' },
+  dogSub: { fontSize: 13, color: '#000', marginTop: 2 },
 });

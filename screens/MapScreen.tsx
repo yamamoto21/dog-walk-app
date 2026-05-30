@@ -202,8 +202,8 @@ export default function MapScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFF8F0' },
-  title: { fontSize: 24, fontWeight: 'bold', color: '#2D3436', padding: 24, paddingBottom: 12 },
+  container: { flex: 1, backgroundColor: '#fddb13' },
+  title: { fontSize: 24, fontWeight: 'bold', color: '#000', padding: 24, paddingBottom: 12 },
   map: { flex: 1 },
   statsBar: {
     backgroundColor: '#fff',
@@ -212,9 +212,9 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#F0F0F0',
   },
-  statsDate: { fontSize: 13, color: '#636E72', marginBottom: 4 },
+  statsDate: { fontSize: 13, color: '#000', marginBottom: 4 },
   statsRow: { flexDirection: 'row', gap: 16 },
-  stat: { fontSize: 14, color: '#2D3436' },
+  stat: { fontSize: 14, color: '#000' },
   walkList: { maxHeight: 100, backgroundColor: '#fff', borderTopWidth: 1, borderTopColor: '#F0F0F0' },
   walkCard: {
     alignItems: 'center', justifyContent: 'center',
@@ -222,15 +222,15 @@ const styles = StyleSheet.create({
     borderRadius: 12, borderWidth: 2, borderColor: '#DFE6E9', backgroundColor: '#fff', minWidth: 72,
   },
   walkCardActive: { borderColor: '#FF8C42', backgroundColor: '#FFF3EC' },
-  walkCardDate: { fontSize: 13, fontWeight: 'bold', color: '#636E72' },
+  walkCardDate: { fontSize: 13, fontWeight: 'bold', color: '#000' },
   walkCardDateActive: { color: '#FF8C42' },
-  walkCardStat: { fontSize: 12, color: '#B2BEC3', marginTop: 2 },
+  walkCardStat: { fontSize: 12, color: '#000', marginTop: 2 },
   walkCardLevel: { fontSize: 16, marginTop: 2 },
   emptyContainer: { padding: 24, alignItems: 'center' },
-  emptyText: { color: '#B2BEC3', fontSize: 14 },
+  emptyText: { color: '#000', fontSize: 14 },
   webPlaceholder: {
     flex: 1, alignItems: 'center', justifyContent: 'center',
   },
   webPlaceholderEmoji: { fontSize: 64 },
-  webPlaceholderText: { fontSize: 16, color: '#636E72', marginTop: 16 },
+  webPlaceholderText: { fontSize: 16, color: '#000', marginTop: 16 },
 });

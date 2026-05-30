@@ -148,16 +148,16 @@ export default function HistoryScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFF8F0' },
-  title: { fontSize: 24, fontWeight: 'bold', color: '#2D3436', padding: 24, paddingBottom: 16 },
-  emptyText: { textAlign: 'center', color: '#B2BEC3', marginTop: 60, fontSize: 16, lineHeight: 28 },
+  container: { flex: 1, backgroundColor: '#fddb13' },
+  title: { fontSize: 24, fontWeight: 'bold', color: '#000', padding: 24, paddingBottom: 16 },
+  emptyText: { textAlign: 'center', color: '#000', marginTop: 60, fontSize: 16, lineHeight: 28 },
   card: {
     backgroundColor: '#fff', marginHorizontal: 24, marginBottom: 12, borderRadius: 16, padding: 16,
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 4, elevation: 2,
   },
   cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
   cardHeaderRight: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  date: { fontSize: 16, fontWeight: 'bold', color: '#2D3436' },
+  date: { fontSize: 16, fontWeight: 'bold', color: '#000' },
   levelBadge: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20, gap: 4 },
   levelEmoji: { fontSize: 14 },
   levelLabel: { fontSize: 13, fontWeight: 'bold' },
@@ -166,8 +166,8 @@ const styles = StyleSheet.create({
   stats: { flexDirection: 'row', gap: 16 },
   stat: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   statEmoji: { fontSize: 14 },
-  statValue: { fontSize: 14, color: '#636E72' },
-  memo: { fontSize: 13, color: '#636E72', marginTop: 8, fontStyle: 'italic' },
+  statValue: { fontSize: 14, color: '#000' },
+  memo: { fontSize: 13, color: '#000', marginTop: 8, fontStyle: 'italic' },
   photoRow: { marginTop: 10 },
   photoThumb: { width: 72, height: 72, borderRadius: 8, marginRight: 8 },
 });

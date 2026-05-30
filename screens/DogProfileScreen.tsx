@@ -145,13 +145,13 @@ export default function DogProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFF8F0' },
+  container: { flex: 1, backgroundColor: '#fddb13' },
   scroll: { padding: 24 },
   header: { alignItems: 'center', paddingVertical: 24 },
   dogEmoji: { fontSize: 80 },
-  title: { fontSize: 24, fontWeight: 'bold', color: '#2D3436', marginTop: 12 },
-  dogName: { fontSize: 32, fontWeight: 'bold', color: '#2D3436', marginTop: 12 },
-  dogDetail: { fontSize: 16, color: '#636E72', marginTop: 6 },
+  title: { fontSize: 24, fontWeight: 'bold', color: '#000', marginTop: 12 },
+  dogName: { fontSize: 32, fontWeight: 'bold', color: '#000', marginTop: 12 },
+  dogDetail: { fontSize: 16, color: '#000', marginTop: 6 },
   buttonRow: { flexDirection: 'row', gap: 12, marginTop: 16 },
   editButton: {
     borderWidth: 2, borderColor: '#FF8C42', borderRadius: 20,
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   },
   deleteButtonText: { color: '#E17055', fontWeight: 'bold' },
   form: { marginTop: 8 },
-  label: { fontSize: 14, fontWeight: 'bold', color: '#2D3436', marginBottom: 8, marginTop: 16 },
+  label: { fontSize: 14, fontWeight: 'bold', color: '#000', marginBottom: 8, marginTop: 16 },
   input: {
     backgroundColor: '#fff', borderRadius: 12, padding: 14, fontSize: 16,
     borderWidth: 1, borderColor: '#DFE6E9',
@@ -175,5 +175,5 @@ const styles = StyleSheet.create({
   },
   saveButtonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
   cancelButton: { paddingVertical: 14, alignItems: 'center', marginTop: 8 },
-  cancelButtonText: { color: '#636E72', fontSize: 16 },
+  cancelButtonText: { color: '#000', fontSize: 16 },
 });

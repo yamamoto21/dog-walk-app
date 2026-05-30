@@ -308,16 +308,16 @@ export default function WalkScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFF8F0' },
+  container: { flex: 1, backgroundColor: '#fddb13' },
   scroll: { padding: 24 },
-  title: { fontSize: 24, fontWeight: 'bold', color: '#2D3436', marginBottom: 24 },
+  title: { fontSize: 24, fontWeight: 'bold', color: '#000', marginBottom: 24 },
   timerCard: {
     backgroundColor: '#fff', borderRadius: 16, padding: 24, alignItems: 'center', marginBottom: 24,
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 4, elevation: 2,
   },
-  timerLabel: { fontSize: 14, color: '#636E72' },
+  timerLabel: { fontSize: 14, color: '#000' },
   timer: { fontSize: 56, fontWeight: 'bold', color: '#FF8C42', marginVertical: 8 },
-  distanceLabel: { fontSize: 15, color: '#636E72' },
+  distanceLabel: { fontSize: 15, color: '#000' },
   startButton: {
     backgroundColor: '#FF8C42', paddingVertical: 18, borderRadius: 16, alignItems: 'center',
     shadowColor: '#FF8C42', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 4,
@@ -329,15 +329,15 @@ const styles = StyleSheet.create({
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 4, elevation: 2,
   },
   poopEmoji: { fontSize: 40 },
-  poopCount: { fontSize: 18, fontWeight: 'bold', color: '#636E72', marginTop: 8 },
+  poopCount: { fontSize: 18, fontWeight: 'bold', color: '#000', marginTop: 8 },
   cameraButton: {
     flex: 1, backgroundColor: '#fff', borderRadius: 16, padding: 20, alignItems: 'center',
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 4, elevation: 2,
   },
   cameraEmoji: { fontSize: 40 },
-  cameraLabel: { fontSize: 14, color: '#636E72', marginTop: 8 },
+  cameraLabel: { fontSize: 14, color: '#000', marginTop: 8 },
   levelSection: { marginBottom: 24 },
-  levelTitle: { fontSize: 16, fontWeight: 'bold', color: '#2D3436', marginBottom: 12 },
+  levelTitle: { fontSize: 16, fontWeight: 'bold', color: '#000', marginBottom: 12 },
   levelRow: { flexDirection: 'row', gap: 8 },
   levelButton: {
     flex: 1, backgroundColor: '#fff', borderRadius: 12, padding: 12, alignItems: 'center',
@@ -345,12 +345,12 @@ const styles = StyleSheet.create({
   },
   levelButtonActive: { borderColor: '#FF8C42', backgroundColor: '#FFF3EC' },
   levelEmoji: { fontSize: 24 },
-  levelLabel: { fontSize: 12, color: '#636E72', marginTop: 4 },
+  levelLabel: { fontSize: 12, color: '#000', marginTop: 4 },
   levelLabelActive: { color: '#FF8C42', fontWeight: 'bold' },
   photoRow: { marginBottom: 16 },
   photoThumb: { width: 80, height: 80, borderRadius: 8, marginRight: 8 },
   memoSection: { marginBottom: 24 },
-  memoTitle: { fontSize: 16, fontWeight: 'bold', color: '#2D3436', marginBottom: 8 },
+  memoTitle: { fontSize: 16, fontWeight: 'bold', color: '#000', marginBottom: 8 },
   memoInput: {
     backgroundColor: '#fff', borderRadius: 12, padding: 14, fontSize: 15,
     borderWidth: 1, borderColor: '#DFE6E9', minHeight: 80, textAlignVertical: 'top',
